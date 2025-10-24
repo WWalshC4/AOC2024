@@ -18,12 +18,11 @@ test = '''3   4
 left = []
 right = []
 
-lines = data.split ('\n')
+lines = data.splitlines ()
 for line in lines:
-	if (len (line) > 0):
-		locationIds = line.split ()
-		left.append (locationIds [0])
-		right.append (locationIds [1])
+	locationIds = line.split ()
+	left.append (locationIds [0])
+	right.append (locationIds [1])
 
 left.sort ()
 right.sort ()
