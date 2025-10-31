@@ -16,12 +16,22 @@ lines = data.splitlines ()
 
 total = 0
 
+include = True
+
+pattern = r'((don\'t\(\))|(do\(\)))|mul\((\d+)\,(\d+)\)'
+
 for line in lines:
-	line = re.sub (r'don\'t\(\).*?do\(\)', '', line)
-	validMuls = re.findall (r'mul\((\d+)\,(\d+)\)', line)
-	for validMul in validMuls:
-		ints = list (map (int, validMul))
-		result = math.prod (ints)
-		total += result
+	for match in re.finditer (pattern, line):
+		token = match.group ()
+		if (token == 'do()'):
+			include = True
+		elif (token == "don't()"):
+			include = False
+		elif (token.startswith ('mul(')):
+			values = re.search (r'mul\((\d+)\,(\d+)\)', token)
+			ints = list (map (int, values.groups ()))
+			result = math.prod (ints)
+			if (include):
+				total += result
 
 print (total)
