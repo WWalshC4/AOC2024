@@ -45,40 +45,54 @@ def checkDirection (xPos, yPos):
 	bl = grid [yPos + 1][xPos - 1]
 	br = grid [yPos + 1][xPos + 1]
 
-	if (tl == 'M'):
-		if (br == 'S'):
-			if (tr == 'M'):
-				if (bl == 'S'):
-					return True
-				else:
-					return False
-			elif (tr == 'S'):
-				if (bl == 'M'):
-					return True
-				else:
-					return False
-			else:
-				return False
-		else:
-			return False
-	elif (tl == 'S'):
-		if (br == 'M'):
-			if (tr == 'M'):
-				if (bl == 'S'):
-					return True
-				else:
-					return False
-			elif (tr == 'S'):
-				if (bl == 'M'):
-					return True
-				else:
-					return False
-			else:
-				return False
-		else:
-			return False
-	else:
+	if (not (tl == 'M' or tl == 'S')):
 		return False
+	if (not (tr == 'M' or tr == 'S')):
+		return False
+	if (not (bl == 'M' or bl == 'S')):
+		return False
+	if (not (br == 'M' or br == 'S')):
+		return False
+	if (tl == br):
+		return False
+	if (tr == bl):
+		return False
+	return True
+
+#	if (tl == 'M'):
+#		if (br == 'S'):
+#			if (tr == 'M'):
+#				if (bl == 'S'):
+#					return True
+#				else:
+#					return False
+#			elif (tr == 'S'):
+#				if (bl == 'M'):
+#					return True
+#				else:
+#					return False
+#			else:
+#				return False
+#		else:
+#			return False
+#	elif (tl == 'S'):
+#		if (br == 'M'):
+#			if (tr == 'M'):
+#				if (bl == 'S'):
+#					return True
+#				else:
+#					return False
+#			elif (tr == 'S'):
+#				if (bl == 'M'):
+#					return True
+#				else:
+#					return False
+#			else:
+#				return False
+#		else:
+#			return False
+#	else:
+#		return False
 
 for yPos, row in enumerate (grid):
 	for xPos, letter in enumerate (row):
