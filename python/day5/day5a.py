@@ -35,7 +35,7 @@ test = '''47|53
 61,13,29
 97,13,75,29,47'''
 #totalOfMiddlePages == 143
-data = test
+#data = test
 
 totalOfMiddlePages = 0
 
