@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os
+import os, copy
 
 inputFile = open("./python/day6/input.txt", "r")
 data = inputFile.read()
@@ -16,8 +16,9 @@ test = """....#.....
 ........#.
 #.........
 ......#..."""
+# distinctPositions == 41
 # len (possibleObstructions) == 6
-data = test
+# data = test
 
 grid = []
 
@@ -33,7 +34,7 @@ for line in lines:
         if "^" in gridline:
             startingPosFound = True
             initialColumn = gridline.index("^")
-            grid[initialRow][initialColumn] = "1"
+            grid[initialRow][initialColumn] = "."
         else:
             initialRow += 1
 
@@ -52,9 +53,14 @@ def getChar(currentChar, direction):
     return "{:X}".format(currentByte)
 
 
-def move(direction, row, column):
-    thisPos = grid[row][column]
-    grid[row][column] = getChar(thisPos, direction)
+def checkPath(checkGrid, row, column, direction):
+    #    return dict(shouldMove=False, loop=False)
+    thisPos = checkGrid[row][column]
+    newVal = getChar(thisPos, direction)
+    if thisPos == newVal:
+        return dict(shouldMove=False, loop=True)
+    checkGrid[row][column] = newVal
+
     nextRow = row
     nextColumn = column
     if direction == 0:
@@ -67,11 +73,11 @@ def move(direction, row, column):
         nextColumn -= 1
 
     if nextRow < 0 or nextColumn < 0:
-        return dict(shouldMove=False)
-    if nextRow >= len(grid) or nextColumn >= (len(grid[row])):
-        return dict(shouldMove=False)
+        return dict(shouldMove=False, loop=False)
+    if nextRow >= len(checkGrid) or nextColumn >= (len(checkGrid[row])):
+        return dict(shouldMove=False, loop=False)
 
-    nextPos = grid[nextRow][nextColumn]
+    nextPos = checkGrid[nextRow][nextColumn]
 
     if nextPos == "#":
         nextRow = row
@@ -80,21 +86,89 @@ def move(direction, row, column):
         if direction == 4:
             direction = 0
     else:
-        nextDirection = direction + 1
-        if nextDirection == 4:
-            nextDirection = 0
-
-        joinsPath = False#checkPath(row, column, nextDirection)
-
-        if joinsPath:
-            obstructionLocation = [nextRow, nextColumn]
-            if not obstructionLocation in possibleObstructions:
-                possibleObstructions.append(obstructionLocation)
         row = nextRow
         column = nextColumn
 
     return dict(
-        shouldMove=True, nextColumn=nextColumn, nextRow=nextRow, nextDirection=direction
+        shouldMove=True,
+        nextColumn=nextColumn,
+        nextRow=nextRow,
+        nextDirection=direction,
+    )
+
+
+def move(regGrid, direction, row, column):
+    newPosition = False
+    thisPos = regGrid[row][column]
+    if thisPos == ".":
+        newPosition = True
+
+    newVal = getChar(thisPos, direction)
+    if thisPos == newVal:
+        return dict(shouldMove=False, loop=True, newPosition=newPosition)
+
+    regGrid[row][column] = getChar(thisPos, direction)
+
+    nextRow = row
+    nextColumn = column
+    if direction == 0:
+        nextRow -= 1
+    elif direction == 1:
+        nextColumn += 1
+    elif direction == 2:
+        nextRow += 1
+    elif direction == 3:
+        nextColumn -= 1
+
+    if nextRow < 0 or nextColumn < 0:
+        return dict(shouldMove=False, loop=False, newPosition=newPosition)
+    if nextRow >= len(regGrid) or nextColumn >= (len(regGrid[row])):
+        return dict(shouldMove=False, loop=False, newPosition=newPosition)
+
+    nextPos = regGrid[nextRow][nextColumn]
+
+    if nextPos == "#":
+        nextRow = row
+        nextColumn = column
+        direction = direction + 1
+        if direction == 4:
+            direction = 0
+    else:
+        whatIfDirection = direction + 1
+        if whatIfDirection == 4:
+            whatIfDirection = 0
+
+        whatIfRow = row
+        whatIfColumn = column
+
+        shouldMove = True
+        obstructionLocation = [nextRow, nextColumn]
+        if obstructionLocation in possibleObstructions:
+            shouldMove = False
+
+        checkGrid = copy.deepcopy(regGrid)
+        checkGrid[nextRow][nextColumn] = "#"
+
+        while shouldMove:
+            ret = checkPath(checkGrid, whatIfRow, whatIfColumn, whatIfDirection)
+            shouldMove = ret["shouldMove"]
+            if shouldMove:
+                whatIfDirection = ret["nextDirection"]
+                whatIfRow = ret["nextRow"]
+                whatIfColumn = ret["nextColumn"]
+            else:
+                loop = ret["loop"]
+                if loop:
+                    possibleObstructions.append(obstructionLocation)
+        row = nextRow
+        column = nextColumn
+
+    return dict(
+        shouldMove=True,
+        nextColumn=nextColumn,
+        nextRow=nextRow,
+        nextDirection=direction,
+        newPosition=newPosition,
     )
 
 
@@ -102,19 +176,19 @@ shouldMove = True
 direction = initialDirection
 row = initialRow
 column = initialColumn
-
-for r in grid:
-    print(r)
-
+distinctPositions = 0
 while shouldMove:
-    ret = move(direction, row, column)
-    shouldMove = ret['shouldMove']
-    if (shouldMove):
-        direction = ret['nextDirection']
-        row = ret['nextRow']
-        column = ret['nextColumn']
+    ret = move(grid, direction, row, column)
+    shouldMove = ret["shouldMove"]
+    newPosition = ret["newPosition"]
+    if newPosition:
+        distinctPositions += 1
+    if shouldMove:
+        direction = ret["nextDirection"]
+        row = ret["nextRow"]
+        column = ret["nextColumn"]
+    else:
+        print(ret)
 
-for r in grid:
-    print(r)
-print(possibleObstructions)
-print(len(possibleObstructions) - 1)
+print(distinctPositions)
+print(len(possibleObstructions) - 1) #remove the one we added at the starting location
