@@ -52,9 +52,10 @@ def getChar(currentChar, direction):
     currentByte = currentByte | 2 ** (direction)
     return "{:X}".format(currentByte)
 
-
 def checkPath(checkGrid, row, column, direction):
-    #    return dict(shouldMove=False, loop=False)
+    ### maybe we need to just write something to the value that says "this is speculative for this direction?"
+    ### stop using single hex char, start using whole byte
+    return dict(shouldMove=False, loop=False)
     thisPos = checkGrid[row][column]
     newVal = getChar(thisPos, direction)
     if thisPos == newVal:
@@ -146,20 +147,23 @@ def move(regGrid, direction, row, column):
         if obstructionLocation in possibleObstructions:
             shouldMove = False
 
-        checkGrid = copy.deepcopy(regGrid)
-        checkGrid[nextRow][nextColumn] = "#"
+        if shouldMove:
+            checkGrid = regGrid
+            #checkGrid = copy.deepcopy(regGrid)
+            checkGrid[nextRow][nextColumn] = "#"
 
-        while shouldMove:
-            ret = checkPath(checkGrid, whatIfRow, whatIfColumn, whatIfDirection)
-            shouldMove = ret["shouldMove"]
-            if shouldMove:
-                whatIfDirection = ret["nextDirection"]
-                whatIfRow = ret["nextRow"]
-                whatIfColumn = ret["nextColumn"]
-            else:
-                loop = ret["loop"]
-                if loop:
-                    possibleObstructions.append(obstructionLocation)
+            while shouldMove:
+                ret = checkPath(checkGrid, whatIfRow, whatIfColumn, whatIfDirection)
+                shouldMove = ret["shouldMove"]
+                if shouldMove:
+                    whatIfDirection = ret["nextDirection"]
+                    whatIfRow = ret["nextRow"]
+                    whatIfColumn = ret["nextColumn"]
+                else:
+                    loop = ret["loop"]
+                    if loop:
+                        possibleObstructions.append(obstructionLocation)
+            checkGrid[nextRow][nextColumn] = nextPos
         row = nextRow
         column = nextColumn
 
