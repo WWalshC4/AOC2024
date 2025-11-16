@@ -40,7 +40,8 @@ for line in lines:
 
 initialDirection = 0  # 0 = up, 1 = right, 2 = down, 3 = left
 
-possibleObstructions = [[initialRow, initialColumn]]
+possibleObstructions = []
+checkedObstructions = [[initialRow, initialColumn]]
 
 def getChar(currentChar, direction):
     currentByte = 0
@@ -55,7 +56,7 @@ def getChar(currentChar, direction):
 def checkPath(checkGrid, row, column, direction):
     ### maybe we need to just write something to the value that says "this is speculative for this direction?"
     ### stop using single hex char, start using whole byte
-    return dict(shouldMove=False, loop=False)
+    #return dict(shouldMove=False, loop=False)
     thisPos = checkGrid[row][column]
     newVal = getChar(thisPos, direction)
     if thisPos == newVal:
@@ -144,12 +145,14 @@ def move(regGrid, direction, row, column):
 
         shouldMove = True
         obstructionLocation = [nextRow, nextColumn]
-        if obstructionLocation in possibleObstructions:
+        if obstructionLocation in checkedObstructions:
             shouldMove = False
+        else:
+            checkedObstructions.append (obstructionLocation)
 
         if shouldMove:
-            checkGrid = regGrid
-            #checkGrid = copy.deepcopy(regGrid)
+            #checkGrid = regGrid
+            checkGrid = copy.deepcopy(regGrid)
             checkGrid[nextRow][nextColumn] = "#"
 
             while shouldMove:
@@ -195,4 +198,4 @@ while shouldMove:
         print(ret)
 
 print(distinctPositions)
-print(len(possibleObstructions) - 1) #remove the one we added at the starting location
+print(len(possibleObstructions))
