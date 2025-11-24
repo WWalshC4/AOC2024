@@ -60,43 +60,42 @@ def iterateRobot(robot):
 
 
 def checkRobots():
-    tl = 0
-    tr = 0
-    bl = 0
-    br = 0
+    grid = [[0] * width for i in range(height)]
 
-    grid = [["."] * width for i in range(height)]
+    lonelyRobots = 0
+    buddyRobots = 0
+    maybeTree = False
+    for robot in robots:
+        grid[robot["yPos"]][robot["xPos"]] += 1
 
     for robot in robots:
-        if grid[robot["yPos"]][robot["xPos"]] == ".":
-            grid[robot["yPos"]][robot["xPos"]] = 0
-        grid[robot["yPos"]][robot["xPos"]] += 1
-        middleColumn = int(width / 2)
-        middleRow = int(height / 2)
+        nearRobots = -1  # account for this robot at 0,0
+        xPos = robot["xPos"]
+        yPos = robot["yPos"]
+        for xDiff in range(-1, 2):
+            for yDiff in range(-1, 2):
+                try:
+                    nearRobots += grid[yPos + yDiff][xPos + xDiff]
+                except:
+                    pass
+        if nearRobots > 0:
+            buddyRobots += 1
+        else:
+            lonelyRobots += 1
 
-        if robot["xPos"] < middleColumn:
-            if robot["yPos"] < middleRow:
-                tl += 1
-            elif robot["yPos"] > middleRow:
-                bl += 1
-        elif robot["xPos"] > middleColumn:
-            if robot["yPos"] < middleRow:
-                tr += 1
-            elif robot["yPos"] > middleRow:
-                br += 1
-    safetyFactor = tl * tr * bl * br
-
-    if tl == tr and bl == br:
+    if buddyRobots > 2 * lonelyRobots:
         for gridline in grid:
-            print("".join(list(map(str, gridline))))
+            print(
+                "".join(list(map(lambda count: " " if (count == 0) else "*", gridline)))
+            )
         return True
     return False
 
 
-iterations = 1000000
+iterations = width * height
 
 for iteration in range(iterations):
     for robot in robots:
         iterateRobot(robot)
     if checkRobots():
-        print(iteration)
+        print(iteration + 1)
