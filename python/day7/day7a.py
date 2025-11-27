@@ -2,7 +2,7 @@
 
 import os
 
-inputFile = open("./python/day7/input.txt", "r")
+inputFile = open("./input.txt", "r")
 data = inputFile.read()
 inputFile.close()
 
@@ -16,13 +16,13 @@ test = """190: 10 19
 21037: 9 7 18 13
 292: 11 6 16 20"""
 # totalTrueResults == 3749
-#data = test
+# data = test
 
 
 def test(target, currentTotal, values, chain):
     pos = len(chain) + 1
     if pos == len(values):
-        #print (chain, currentTotal, target)
+        # print (chain, currentTotal, target)
         if currentTotal == target:
             return True
         else:
@@ -40,16 +40,17 @@ def test(target, currentTotal, values, chain):
     if times <= target:
         validTimes = test(target, times, values, chain + "*")
 
-    if (validPlus or validTimes):
+    if validPlus or validTimes:
         return True
+
 
 def processLine(line):
     line = line.replace(":", "")
     values = list(map(int, line.split()))
     targetResult = values.pop(0)
     firstValue = values[0]
-    correctResult = test(targetResult, firstValue, values, '')
-    if (correctResult):
+    correctResult = test(targetResult, firstValue, values, "")
+    if correctResult:
         return targetResult
     else:
         return 0

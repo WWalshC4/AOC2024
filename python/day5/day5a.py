@@ -2,11 +2,11 @@
 
 import os
 
-inputFile = open ('./python/day5/input.txt', 'r')
-data = inputFile.read ()
-inputFile.close ()
+inputFile = open("./python/day5/input.txt", "r")
+data = inputFile.read()
+inputFile.close()
 
-test = '''47|53
+test = """47|53
 97|13
 97|61
 97|47
@@ -33,48 +33,48 @@ test = '''47|53
 75,29,13
 75,97,47,61,53
 61,13,29
-97,13,75,29,47'''
-#totalOfMiddlePages == 143
-#data = test
+97,13,75,29,47"""
+# totalOfMiddlePages == 143
+# data = test
 
 totalOfMiddlePages = 0
 
-sections = data.split ('\n\n')
+sections = data.split("\n\n")
 
-rulesRaw = sections [0].splitlines ()
-printRunsRaw = sections [1].splitlines ()
+rulesRaw = sections[0].splitlines()
+printRunsRaw = sections[1].splitlines()
 
 rulesByBefore = {}
 rulesByAfter = {}
 
 for rule in rulesRaw:
-	ruleData = list (map (int, rule.split ('|')))
-	before = ruleData [0]
-	after = ruleData [1]
-	if not before in rulesByBefore:
-		rulesByBefore [before] = {}
-	if not after in rulesByAfter:
-		rulesByAfter [after] = {}
-	rulesByBefore [before] [after] = True
-	rulesByAfter [after] [before] = True
+    ruleData = list(map(int, rule.split("|")))
+    before = ruleData[0]
+    after = ruleData[1]
+    if not before in rulesByBefore:
+        rulesByBefore[before] = {}
+    if not after in rulesByAfter:
+        rulesByAfter[after] = {}
+    rulesByBefore[before][after] = True
+    rulesByAfter[after][before] = True
 
 printRuns = []
 
 for printRunRaw in printRunsRaw:
-	printRun = list (map (int, printRunRaw.split (',')))
-	printRuns.append (printRun)
+    printRun = list(map(int, printRunRaw.split(",")))
+    printRuns.append(printRun)
 
 for printRun in printRuns:
-	valid = True
-	pagesSeen = {}
-	for page in printRun:
-		for seenPage in pagesSeen:
-			if (page in rulesByBefore and seenPage in rulesByBefore [page]):
-				valid = False
-		pagesSeen [page] = True
-	if (valid):
-		middlePos = int(len (printRun) / 2) #0 indexed!
-		middlePage = printRun [middlePos]
-		totalOfMiddlePages += middlePage
+    valid = True
+    pagesSeen = {}
+    for page in printRun:
+        for seenPage in pagesSeen:
+            if page in rulesByBefore and seenPage in rulesByBefore[page]:
+                valid = False
+        pagesSeen[page] = True
+    if valid:
+        middlePos = int(len(printRun) / 2)  # 0 indexed!
+        middlePage = printRun[middlePos]
+        totalOfMiddlePages += middlePage
 
-print (totalOfMiddlePages)
+print(totalOfMiddlePages)

@@ -2,7 +2,7 @@
 
 import os, copy
 
-inputFile = open("./python/day6/input.txt", "r")
+inputFile = open("./input.txt", "r")
 data = inputFile.read()
 inputFile.close()
 
@@ -43,6 +43,7 @@ initialDirection = 0  # 0 = up, 1 = right, 2 = down, 3 = left
 possibleObstructions = []
 checkedObstructions = [[initialRow, initialColumn]]
 
+
 def getChar(currentChar, direction):
     currentByte = 0
     try:
@@ -53,10 +54,11 @@ def getChar(currentChar, direction):
     currentByte = currentByte | 2 ** (direction)
     return "{:X}".format(currentByte)
 
+
 def checkPath(checkGrid, row, column, direction):
     ### maybe we need to just write something to the value that says "this is speculative for this direction?"
     ### stop using single hex char, start using whole byte
-    #return dict(shouldMove=False, loop=False)
+    # return dict(shouldMove=False, loop=False)
     thisPos = checkGrid[row][column]
     newVal = getChar(thisPos, direction)
     if thisPos == newVal:
@@ -148,10 +150,10 @@ def move(regGrid, direction, row, column):
         if obstructionLocation in checkedObstructions:
             shouldMove = False
         else:
-            checkedObstructions.append (obstructionLocation)
+            checkedObstructions.append(obstructionLocation)
 
         if shouldMove:
-            #checkGrid = regGrid
+            # checkGrid = regGrid
             checkGrid = copy.deepcopy(regGrid)
             checkGrid[nextRow][nextColumn] = "#"
 

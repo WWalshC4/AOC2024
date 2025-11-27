@@ -4,7 +4,7 @@ from functools import cmp_to_key
 
 import os
 
-inputFile = open("./python/day5/input.txt", "r")
+inputFile = open("./input.txt", "r")
 data = inputFile.read()
 inputFile.close()
 

@@ -2,7 +2,7 @@
 
 import os
 
-inputFile = open("./python/day8/input.txt", "r")
+inputFile = open("./input.txt", "r")
 data = inputFile.read()
 inputFile.close()
 
