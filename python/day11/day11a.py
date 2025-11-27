@@ -8,7 +8,7 @@ inputFile.close()
 
 test = """125 17"""
 # stoneCount25 == 55312
-data = test
+# data = test
 
 
 def blink(stones):
@@ -28,7 +28,7 @@ def blink(stones):
 
 stones = list(map(int, data.split()))
 
-for index in range(6):
+for index in range(25):
     stones = blink(stones)
     # print(stones)
 
