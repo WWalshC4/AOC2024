@@ -8,7 +8,9 @@ inputFile.close()
 
 test = """2333133121414131402"""
 # checksum == 1928
-# data = test
+data = test
+
+data = data.strip()
 
 
 def processDiskMap(diskMap):
@@ -18,11 +20,7 @@ def processDiskMap(diskMap):
     id = 0
     for letter in diskMap:
         start = len(diskLayout)
-        try:
-            size = int(letter)
-        except:
-            # input file has a newline, use this to indicate we're done
-            return diskLayout, freeSpaceLocations
+        size = int(letter)
         value = "."
         if isFile:
             value = id
@@ -67,6 +65,7 @@ def getChecksum(diskLayout):
 
 
 diskLayout, freeSpaceLocations = processDiskMap(data)
+print(" ".join(list(map(str, diskLayout))))
 diskLayout = optimize(diskLayout, freeSpaceLocations)
 checksum = getChecksum(diskLayout)
 
